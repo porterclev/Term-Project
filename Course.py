@@ -45,37 +45,33 @@ def list_objects(db):
         exec(list_action)
 
 
-# class Course:
-#     def __init__(self, db):
-#         self.db = db
-#         self.collection = db["courses"]
-#         self.unique_course_number = False
-#         self.unique_course_name = False
-#         self.unique_course_description = False
-#         self.course_number = ""
-#         self.course_name = ""
-#         self.course_description = ""
-
-
 def add_course(db):
     while True:
         collection = db["courses"]
+        unique_department_abbreviation = False
         unique_course_number = False
         unique_course_name = False
         unique_course_description = False
+        department_abbreviation: str = ""
         course_number = ""
         course_name = ""
         course_description = ""
+        department_abbreviation = input("Enter the department abbreviation: ")
         course_number = input("Enter the course number: ")
         course_name = input("Enter the course name: ")
         course_description = input("Enter the course description: ")
         for course in collection.find():
+            if course["department_abbreviation"] == department_abbreviation:
+                unique_department_abbreviation = True
             if course["course_number"] == course_number:
                 unique_course_number = True
             if course["course_name"] == course_name:
                 unique_course_name = True
             if course["course_description"] == course_description:
                 unique_course_description = True
+        if unique_department_abbreviation:
+            print("Department abbreviation already exists. Please try again.")
+            continue
         if unique_course_number:
             print("Course number already exists. Please try again.")
             continue
@@ -96,23 +92,25 @@ def add_course(db):
     print("Course added successfully.")
 
 
-def delete_course(self):
+def delete_course(db):
+    collection = db["courses"]
     while True:
-        self.course_number = input("Enter the course number to delete: ")
-        self.unique_course_number = False
-        for course in self.collection.find():
-            if course["course_number"] == self.course_number:
-                self.unique_course_number = True
-        if not self.unique_course_number:
+        course_number = input("Enter the course number to delete: ")
+        unique_course_number = False
+        for course in collection.find():
+            if course["course_number"] == course_number:
+                unique_course_number = True
+        if not unique_course_number:
             print("Course number does not exist. Please try again.")
             continue
         break
-    self.collection.delete_one({"course_number": self.course_number})
+    result = collection.delete_one({"course_number": course_number})
     print("Course deleted successfully.")
 
 
-def list_courses(self):
-    for course in self.collection.find():
+def list_course(db):
+    collection = db["courses"]
+    for course in collection.find():
         print(course)
 
 
@@ -150,11 +148,19 @@ if __name__ == "__main__":
 
     # ************************** Set up the students collection
     courses_index = courses.index_information()
+    if "courses_department_abbreviations" in courses_index.keys():
+        print("name index present.")
+    else:
+        courses.create_index(
+            [("course_department_abbreviation", pymongo.ASCENDING)],
+            unique=True,
+            name="courses_department_abbreviations",
+        )
     if "courses_names" in courses_index.keys():
         print("name index present.")
     else:
         courses.create_index(
-            [("course_name", pymongo.ASCENDING)], unique=True, name="names"
+            [("course_name", pymongo.ASCENDING)], unique=True, name="courses_names"
         )
 
     if "courses_numbers" in courses_index.keys():
@@ -163,7 +169,7 @@ if __name__ == "__main__":
         courses.create_index(
             [("course_number", pymongo.ASCENDING)],
             unique=True,
-            name="departments_abbreviations",
+            name="courses_numbers",
         )
 
     if "courses_descriptions" in courses_index.keys():
@@ -172,7 +178,7 @@ if __name__ == "__main__":
         courses.create_index(
             [("description", pymongo.ASCENDING)],
             unique=True,
-            name="departments_chair_names",
+            name="description",
         )
 
     pprint(courses.index_information())
