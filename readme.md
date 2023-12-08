@@ -1,11 +1,9 @@
 # config file setup
 
-createconfig.config 
+create "config.config" in directory and copy below into this file
 
------Copy Here------
 [Mongo]
 USERNAME = 
 PASSWORD = 
 PROJECT = 
 HASH = 
------End Here--------
