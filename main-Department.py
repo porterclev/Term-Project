@@ -6,6 +6,7 @@ from menu_definitions import menu_main
 from menu_definitions import add_menu
 from menu_definitions import delete_menu
 from menu_definitions import list_menu
+from configparser import ConfigParser
 
 
 def add(db):
@@ -185,14 +186,22 @@ def list_department(db):
 
 
 if __name__ == "__main__":
-    password: str = getpass.getpass("Mongo DB password -->")
-    username: str = (
-        input("Database username [user on Atlas] -->") or "CECS-323-Spring-2023-user"
-    )
-    project: str = (
-        input("Mongo project name [Atlas Project Name] -->") or "CECS-323-Spring-2023"
-    )
-    hash_name: str = input("7-character database hash [qzl49vl] -->") or "puxnikb"
+    config = ConfigParser()
+    config.sections()
+    config.read("config.config")
+    print(config["Mongo"]["USERNAME"])
+    username = config["Mongo"]["USERNAME"]
+    password = config["Mongo"]["PASSWORD"]
+    project = config["Mongo"]["PROJECT"]
+    hash_name = config["Mongo"]["HASH"]
+    # password: str = getpass.getpass("Mongo DB password -->")
+    # username: str = (
+    #     input("Database username [user on Atlas] -->") or "CECS-323-Spring-2023-user"
+    # )
+    # project: str = (
+    #     input("Mongo project name [Atlas Project Name] -->") or "CECS-323-Spring-2023"
+    # )
+    # hash_name: str = input("7-character database hash [qzl49vl] -->") or "puxnikb"
     cluster = f"mongodb+srv://{username}:{password}@{project}.{hash_name}.mongodb.net/?retryWrites=true&w=majority"
     print(
         f"Cluster: mongodb+srv://{username}:********@{project}.{hash_name}.mongodb.net/?retryWrites=true&w=majority"
