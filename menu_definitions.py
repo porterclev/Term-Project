@@ -31,6 +31,7 @@ add_menu = Menu(
     [
         Option("Department", "add_department(db)"),
         Option("Course", "add_course(db)"),
+        Option("Section", "add_section(db)"),
         #    Option("Major", "add_major(db)"),
         Option("Student", "add_student(db)"),
         #    Option("Student to Major", "add_student_major(db)"),
@@ -45,6 +46,7 @@ delete_menu = Menu(
     [
         Option("Department", "delete_department(db)"),
         Option("Course", "delete_course(db)"),
+        Option("Section", "delete_section(db)"),
         #    Option("Major", "delete_major(db)"),
         Option("Student", "delete_student(db)"),
         #    Option("Student to Major", "delete_student_major(db)"),
@@ -59,6 +61,7 @@ list_menu = Menu(
     [
         Option("Department", "list_department(db)"),
         Option("Course", "list_course(db)"),
+        Option("Section", "list_section(db)"),
         #    Option("Major", "list_major(db)"),
         Option("Student", "list_student(db)"),
         #    Option("Student to Major", "list_student_major(db)"),
