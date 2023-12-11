@@ -80,4 +80,22 @@ def delete_enrollment(db):
                 unique_section_id = True
             if enrollment["course_number"] == course_number:
                 unique_student_id = True
+                
+        if (
+            not unique_section_id
+            and not unique_student_id
+        ):
+            print("Enrollment does not exist. Please try again.")
+            continue
+        break
+    result = collection.delete_one(
+        {
+            "department_abbreviation": department_abbreviation,
+            "course_number": course_number,
+            "section_number": section_number,
+            "semester": semester,
+            "section_year": section_year,
+        }
+    )
+    print("Course deleted successfully.")
 
