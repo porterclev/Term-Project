@@ -67,3 +67,17 @@ def add_enrollment(db):
             print("Enrollment type must be PassFail or LetterGrade.")        
     enrollment = {"student_id": studentID, "section_id": sectionID, "enrollment_type": enrollmentType}
     results = collection.insert_one(enrollment)
+
+def delete_enrollment(db):
+    collection = db["enrollments"]
+    while True:
+        section_id = int(input("Enter the section ID of the enrollment to delete: "))
+        unique_section_id = False
+        student_id = int(input("Enter the student ID of the enrollment to delete: "))
+        unique_student_id = False
+        for enrollment in collection.find():
+            if enrollment["section_id"] == section_id:
+                unique_section_id = True
+            if enrollment["course_number"] == course_number:
+                unique_student_id = True
+
