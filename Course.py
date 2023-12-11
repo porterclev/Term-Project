@@ -75,11 +75,8 @@ def add_course(db):
                 unique_course_name = True
             if course["course_description"] == course_description:
                 unique_course_description = True
-        if unique_department_abbreviation:
-            print("Department abbreviation already exists. Please try again.")
-            continue
-        if unique_course_number:
-            print("Course number already exists. Please try again.")
+        if unique_department_abbreviation and unique_course_number:
+            print("Course already exists. Please try again.")
             continue
         if unique_course_name:
             print("Course name already exists. Please try again.")
@@ -90,6 +87,7 @@ def add_course(db):
         break
     result = collection.insert_one(
         {
+            "department_abbreviation": department_abbreviation,
             "course_number": course_number,
             "course_name": course_name,
             "course_description": course_description,
@@ -150,27 +148,33 @@ if __name__ == "__main__":
     print(db.list_collection_names())
     courses = db["courses"]
     course_count = courses.count_documents({})
-    print(f"Departments in the collection so far: {course_count}")
+    print(f"Courses in the collection so far: {course_count}")
 
     # ************************** Set up the students collection
     courses_index = courses.index_information()
-    if "courses_department_abbreviations" in courses_index.keys():
-        print("name index present.")
-    else:
-        courses.create_index(
-            [("course_department_abbreviation", pymongo.ASCENDING)],
-            unique=True,
-            name="courses_department_abbreviations",
-        )
     if "courses_names" in courses_index.keys():
         print("name index present.")
     else:
         courses.create_index(
-            [("course_name", pymongo.ASCENDING)], unique=True, name="courses_names"
+            [
+                ("course_name", pymongo.ASCENDING),
+                ("department_abbreviation", pymongo.ASCENDING),
+            ],
+            unique=True,
+            name="courses_names",
         )
 
+    # if "courses_departments" in courses_index.keys():
+    #     print("department index present.")
+    # else:
+    #     courses.create_index(
+    #         [("department_abbreviation", pymongo.ASCENDING)],
+    #         unique=True,
+    #         name="courses_departments",
+    #     )
+
     if "courses_numbers" in courses_index.keys():
-        print("abbreviation index present.")
+        print("number index present.")
     else:
         courses.create_index(
             [("course_number", pymongo.ASCENDING)],
@@ -182,7 +186,7 @@ if __name__ == "__main__":
         print("chair name index present.")
     else:
         courses.create_index(
-            [("description", pymongo.ASCENDING)],
+            [("course_description", pymongo.ASCENDING)],
             unique=True,
             name="description",
         )
