@@ -9,42 +9,61 @@ from menu_definitions import list_menu
 from configparser import ConfigParser
 from datetime import time, datetime
 
-
-
-
-def add_student(db):
+def add(db):
     """
-    Add a new student, making sure that we don't put in any duplicates,
-    based on all the candidate keys (AKA unique indexes) on the
-    students collection.  Theoretically, we could query MongoDB to find
-    the uniqueness constraints in place, and use that information to
-    dynamically decide what searches we need to do to make sure that
-    we don't violate any of the uniqueness constraints.  Extra credit anyone?
-    :param collection:  The pointer to the students collection.
-    :return:            None
+    Present the add menu and execute the user's selection.
+    :param db:  The connection to the current database.
+    :return:    None
     """
-    # Create a "pointer" to the students collection within the db database.
-    collection = db["students"]
-    unique_name: bool = False
-    unique_email: bool = False
-    lastName: str = ""
-    firstName: str = ""
-    email: str = ""
-    while not unique_name or not unique_email:
-        lastName = input("Student last name--> ")
-        firstName = input("Student first name--> ")
-        email = input("Student e-mail address--> ")
-        name_count: int = collection.count_documents(
-            {"last_name": lastName, "first_name": firstName}
-        )
+    add_action: str = ""
+    while add_action != add_menu.last_action():
+        add_action = add_menu.menu_prompt()
+        exec(add_action)
+
+
+def delete(db):
+    """
+    Present the delete menu and execute the user's selection.
+    :param db:  The connection to the current database.
+    :return:    None
+    """
+    delete_action: str = ""
+    while delete_action != delete_menu.last_action():
+        delete_action = delete_menu.menu_prompt()
+        exec(delete_action)
+
+
+def list_objects(db):
+    """
+    Present the list menu and execute the user's selection.
+    :param db:  The connection to the current database.
+    :return:    None
+    """
+    list_action: str = ""
+    while list_action != list_menu.last_action():
+        list_action = list_menu.menu_prompt()
+        exec(list_action)
+
+def add_enrollment(db):
+    collection = db["enrollments"]
+    unique_student: bool = False
+    unique_section: bool = False
+    studentID: str = ""
+    sectionID: str = ""
+    enrollmentType: str = ""
+    while not unique_student and not unique_section:
+        studentID = input("Student ID--> ")
+        sectionID = input("Section ID--> ")
+        student_count: int = collection.count_documents(
+            {"student_id": studentID})
         unique_name = name_count == 0
-        if not unique_name:
-            print("We already have a student by that name.  Try again.")
-        if unique_name:
-            email_count = collection.count_documents({"e_mail": email})
-            unique_email = email_count == 0
-            if not unique_email:
-                print("We already have a student with that e-mail address.  Try again.")
-    # Build a new students document preparatory to storing it
-    student = {"last_name": lastName, "first_name": firstName, "e_mail": email}
-    results = collection.insert_one(student)
+        section_count = collection.count_documents({"section_id": sectionID})
+        unique_email = email_count == 0     
+        if not unique_name and not unique student:
+            print("We already have a student with that ID number enrolled in that section.  Try again.")          
+    while enrollmentType not in ["PassFail, LetterGrade]:
+        enrollmentType = input("Enrollement type--> ")
+        if enrollmentType not in ["PassFail", "LetterGrade"]:
+            print("Enrollment type must be PassFail or LetterGrade.")        
+    enrollment = {"student_id": studentID, "section_id": sectionID, "enrollment_type": enrollmentType}
+    results = collection.insert_one(enrollment)
