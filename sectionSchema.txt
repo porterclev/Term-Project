@@ -72,5 +72,8 @@ section_validator =
           maxLength: 80,
           description: 'The instructor teaching the section.'
         }
-        
+      }
+    }
+  }
+}
           
