@@ -57,6 +57,12 @@ def add_course(db):
         course_name = ""
         course_description = ""
         department_abbreviation = input("Enter the department abbreviation: ")
+        if (
+            db["departments"].count_documents({"abbreviation": department_abbreviation})
+            == 0
+        ):
+            print("Department abbreviation does not exist. Please try again.")
+            continue
         course_number = input("Enter the course number: ")
         course_name = input("Enter the course name: ")
         course_description = input("Enter the course description: ")

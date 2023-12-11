@@ -65,7 +65,19 @@ def add_section(db):
 
         print("Please provide the course that this section belongs to:")
         department_abbreviation = input("Department abbreviation --> ")
+        if (
+            db["departments"].count_documents({"abbreviation": department_abbreviation})
+            == 0
+        ):
+            print("Department abbreviation does not exist. Please try again.")
+            continue
         course_number = int(input("Course number --> "))
+        if (
+            db["courses"].count_documents({"course_number": course_number})
+            == 0
+        ):
+            print("Department abbreviation does not exist. Please try again.")
+            continue
         section_number = int(input("What is the section number -->"))
         semester = input("Which semester is this section offered in? --> ")
         section_year = int(input("Which year is this section offered in? --> "))
