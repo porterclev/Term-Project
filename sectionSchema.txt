@@ -1,33 +1,38 @@
-sectiom_validator = 
+section_validator = 
 {
   validator: {
     '$jsonSchema': {
       bsonType: 'object',
       description: 'A section of a particular course',
       required: [
-        'name',
-        'abbreviation',
-        'chair_name',
+        'department_abbreviation',
+        'course_number',
+        'section_number',
+        'semester',
+        'section_year',
         'building',
-        'office',
-        'description'
+        'room',
+        'schedule',
+        'start_time',
+        'instructor'
       ],
       additionalProperties: false,
       properties: {
         _id: {},
-        name: {
+        department_abbreviation: {
           bsonType: 'string',
-          minLength: 10,
-          maxLength: 50,
-          description: 'The name of the department'
+          maxLength: 10,
+          description: 'The abbreviation of the department that offers the course the section is of.'
         },
-        abbreviation: {
-          bsonType: 'string',
+        course_number: {
+          bsonType: 'integer',
+          description: 'The course number for the course the section is of.'
+        },
+        section_number: {
+          bsonType: 'integer',
+          description: 'The number of the specific section.'
+        },
+        building: {
+          bsonType: 'string'
           maxLength: 6,
-          description: 'An abbreviation of the department'
-        },
-        chair_name: {
-          bsonType: 'string',
-          maxLength: 80,
-          description: 'the name of the head of the department'
-        },
+          
