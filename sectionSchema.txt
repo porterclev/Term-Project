@@ -1,10 +1,10 @@
 section_validator = 
 {
-  validator: {
+  'validator': {
     '$jsonSchema': {
-      bsonType: 'object',
-      description: 'A section of a particular course',
-      required: [
+      'bsonType': 'object',
+      'description': 'A section of a particular course',
+      'required': [
         'department_abbreviation',
         'course_number',
         'section_number',
