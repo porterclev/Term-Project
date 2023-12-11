@@ -24,11 +24,13 @@ course_validator =
           'description': 'The number of the course within the department.'
         },
         'name': {
-          'bsonType': 'integer',
+          'bsonType': 'string',
+          'maxLength': 50
           'description': 'The name of the course.'
         },
         'description': {
           'bsonType': 'string',
+          'maxLength': 80
           'description': 'Text about the course.'
         },
         'units': {
