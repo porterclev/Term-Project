@@ -61,9 +61,43 @@ def add_enrollment(db):
         unique_email = email_count == 0     
         if not unique_name and not unique student:
             print("We already have a student with that ID number enrolled in that section.  Try again.")          
-    while enrollmentType not in ["PassFail, LetterGrade]:
-        enrollmentType = input("Enrollement type--> ")
+    while enrollmentType not in ["PassFail", "LetterGrade"]:
+        enrollmentType = input("Enrollment type--> ")
         if enrollmentType not in ["PassFail", "LetterGrade"]:
             print("Enrollment type must be PassFail or LetterGrade.")        
     enrollment = {"student_id": studentID, "section_id": sectionID, "enrollment_type": enrollmentType}
     results = collection.insert_one(enrollment)
+
+def delete_enrollment(db):
+    collection = db["enrollments"]
+    while True:
+        section_id = int(input("Enter the section ID of the enrollment to delete: "))
+        unique_section_id = False
+        student_id = int(input("Enter the student ID of the enrollment to delete: "))
+        unique_student_id = False
+        enrollment_type = input("Enter the enrollment type: ")
+        correct_type = False
+        for enrollment in collection.find():
+            if enrollment["section_id"] == section_id:
+                unique_section_id = True
+            if enrollment["course_number"] == course_number:
+                unique_student_id = True
+            if enrollment["enrollment_type"] == enrollment_type:
+                correct_type = True         
+        if (
+            not unique_section_id
+            and not unique_student_id
+            
+        ):
+            print("Enrollment does not exist. Please try again.")
+            continue
+        break
+    result = collection.delete_one(
+        {
+            "section_id": section_id,
+            "student_id": student_id,
+            "enrollment_type": enrollment_type
+        }
+    )
+    print("Course deleted successfully.")
+
