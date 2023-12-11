@@ -61,7 +61,7 @@ def add_enrollment(db):
         unique_email = email_count == 0     
         if not unique_name and not unique student:
             print("We already have a student with that ID number enrolled in that section.  Try again.")          
-    while enrollmentType not in ["PassFail, LetterGrade]:
+    while enrollmentType not in ["PassFail", "LetterGrade"]:
         enrollmentType = input("Enrollement type--> ")
         if enrollmentType not in ["PassFail", "LetterGrade"]:
             print("Enrollment type must be PassFail or LetterGrade.")        
