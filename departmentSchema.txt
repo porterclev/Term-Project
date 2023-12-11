@@ -1,10 +1,10 @@
 department_validator = 
 {
-  validator: {
+  'validator': {
     '$jsonSchema': {
-      bsonType: 'object',
-      description: 'A department in the university',
-      required: [
+      'bsonType': 'object',
+      'description': 'A department in the university',
+      'required': [
         'name',
         'abbreviation',
         'chair_name',
@@ -12,40 +12,43 @@ department_validator =
         'office',
         'description'
       ],
-      additionalProperties: false,
-      properties: {
-        _id: {},
-        name: {
-          bsonType: 'string',
-          minLength: 10,
-          maxLength: 50,
-          description: 'The name of the department'
+      'additionalProperties': false,
+      'properties': {
+        '_id': {},
+        'name': {
+          'bsonType': 'string',
+          'minLength': 10,
+          'maxLength': 50,
+          'description': 'The name of the department'
         },
-        abbreviation: {
-          bsonType: 'string',
-          maxLength: 6,
-          description: 'An abbreviation of the department'
+        'abbreviation': {
+          'bsonType': 'string',
+          'maxLength': 6,
+          'description': 'An abbreviation of the department'
         },
-        chair_name: {
-          bsonType: 'string',
-          maxLength: 80,
-          description: 'the name of the head of the department'
+        'chair_name': {
+          'bsonType': 'string',
+          'maxLength': 80,
+          'description': 'the name of the head of the department'
         },
-        building: {
-          enum: [
+        'building': {
+          'enum': [
             'ANAC', 'CDC', 'DC',
             'ECS',  'EN2', 'EN3',
             'EN4',  'EN5', 'ET',
             'HSCI', 'NUR', 'VEC'
           ],
-          description: 'An abbreviation of the department'
+          'description': 'An abbreviation of the department'
         },
-        office: { bsonType: 'number', description: 'office number' },
-        description: {
-          bsonType: 'string',
-          minLength: 10,
-          maxLength: 80,
-          description: 'text about the department'
+        'office': { 
+          'bsonType': 'number', 
+          'description': 'office number' 
+        },
+        'description': {
+          'bsonType': 'string',
+          'minLength': 10,
+          'maxLength': 80,
+          'description': 'text about the department'
         }
       }
     }
