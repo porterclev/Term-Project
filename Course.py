@@ -53,7 +53,7 @@ def add_course(db):
         unique_course_name = False
         unique_course_description = False
         department_abbreviation: str = ""
-        course_number = ""
+        course_number = 0
         course_name = ""
         course_description = ""
         department_abbreviation = input("Enter the department abbreviation: ")
@@ -63,7 +63,7 @@ def add_course(db):
         ):
             print("Department abbreviation does not exist. Please try again.")
             continue
-        course_number = input("Enter the course number: ")
+        course_number = int(input("Enter the course number: "))
         course_name = input("Enter the course name: ")
         course_description = input("Enter the course description: ")
         for course in collection.find():
