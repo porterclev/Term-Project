@@ -5,9 +5,8 @@ major_validator =
       'bsonType': 'object',
       'description': 'An enrollment of a student into a section.',
       'required': [
-        'student_id',
-        'section_id'
-        'enrollment_type'
+        'name',
+        'description'
       ],
       'additionalProperties': false,
       'properties': {
