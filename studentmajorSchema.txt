@@ -1,1 +1,26 @@
-
+student_major_validator = 
+{
+  'validator': {
+    '$jsonSchema': {
+      'bsonType': 'object',
+      'description': 'An instance of a student in a particular major.',
+      'required': [
+        'student_id',
+        'major_name',
+        'declaration_date'
+      ],
+      'additionalProperties': false,
+      'properties': {
+        '_id': {},
+        'student_id': {
+          'bsonType': 'integer',
+          'description': 'The ID number of the student'
+        },
+        'section_id': {
+          'bsonType': 'string',
+          'description': 'The ID number of the section the student is enrolling in'
+        }
+      }
+    }
+  }
+}
