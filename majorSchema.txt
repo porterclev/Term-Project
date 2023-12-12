@@ -11,18 +11,13 @@ major_validator =
       'additionalProperties': false,
       'properties': {
         '_id': {},
-        'student_id': {
-          'bsonType': 'integer',
-          'description': 'The ID number of the student enrolling'
+        'name': {
+          'bsonType': 'string',
+          'description': 'The name of the major'
         },
-        'section_id': {
-          'bsonType': 'integer',
-          'description': 'The ID number of the section the student is enrolling in'
-        },
-        'enrollment_type': {
-          'bsonType': 'string'
-          'enum': ['PassFail', 'LetterGrade'],
-          'description': 'The type of enrollment the student has in the section'
+        'description': {
+          'bsonType': 'string',
+          'description': 'Text about the major'
         }
       }
     }
