@@ -65,18 +65,23 @@ def add_section(db):
 
         print("Please provide the course that this section belongs to:")
         department_abbreviation = input("Department abbreviation --> ")
-        if (
-            db["departments"].count_documents({"abbreviation": department_abbreviation})
-            == 0
-        ):
-            print("Department abbreviation does not exist. Please try again.")
-            continue
+        # if (
+        #     db["departments"].count_documents({"abbreviation": department_abbreviation})
+        #     == 0
+        # ):
+        #     print("Department abbreviation does not exist. Please try again.")
+        #     continue
         course_number = int(input("Course number --> "))
         if (
-            db["courses"].count_documents({"course_number": course_number})
+            db["courses"].count_documents(
+                {
+                    "department_abbreviation": department_abbreviation,
+                    "course_number": course_number,
+                }
+            )
             == 0
         ):
-            print("Department abbreviation does not exist. Please try again.")
+            print("Course Number does not exist. Please try again.")
             continue
         section_number = int(input("What is the section number -->"))
         semester = input("Which semester is this section offered in? --> ")
@@ -86,8 +91,8 @@ def add_section(db):
             input(f"Which room of building {building} is this section offered in? --> ")
         )
         schedule = input("What is the schedule for this section? (MW, MWF)--> ")
-        start_hour = int(input("Start hour --> "))
-        start_minute = int(input("Start minute --> "))
+        # start_hour = int(input("Start hour --> "))
+        # start_minute = int(input("Start minute --> "))
         start_time = input("Start time --> ")
         instructor = input("Instructor full name --> ")
         for section in collection.find():
@@ -230,20 +235,54 @@ if __name__ == "__main__":
 
     # ************************** Set up the students collection
     sections_index = sections.index_information()
-    if "sections_department_abbreviations" in sections_index.keys():
-        print("name index present.")
+    if "sections_pks" in sections_index.keys():
+        print("pks index present.")
     else:
         sections.create_index(
-            [("section_department_abbreviation", pymongo.ASCENDING)],
+            [
+                ("department_abbreviation", pymongo.ASCENDING),
+                ("course_number", pymongo.ASCENDING),
+                ("section_number", pymongo.ASCENDING),
+                ("semester", pymongo.ASCENDING),
+                ("section_year", pymongo.ASCENDING),
+            ],
             unique=True,
-            name="sections_department_abbreviations",
+            name="sections_pks",
+        )
+    if "sections_buildings" in sections_index.keys():
+        print("buildings index present.")
+    else:
+        sections.create_index(
+            [
+                ("section_number", pymongo.ASCENDING),
+                ("semester", pymongo.ASCENDING),
+                ("building", pymongo.ASCENDING),
+                ("room", pymongo.ASCENDING),
+                ("schedule", pymongo.ASCENDING),
+                ("start_time", pymongo.ASCENDING),
+            ],
+            unique=True,
+            name="sections_buildings",
         )
 
-    if "sections_course_numbers" in sections_index.keys():
+    if "sections_instructors" in sections_index.keys():
+        print("instructors index present.")
+    else:
+        sections.create_index(
+            [
+                ("section_number", pymongo.ASCENDING),
+                ("semester", pymongo.ASCENDING),
+                ("start_time", pymongo.ASCENDING),
+                ("instructor", pymongo.ASCENDING),
+            ],
+            unique=True,
+            name="sections_instructors",
+        )
+    """ if "sections_course_numbers" in sections_index.keys():
         print("name index present.")
     else:
         sections.create_index(
-            [("section_course_number", pymongo.ASCENDING)],
+            [("course_number", pymongo.ASCENDING)],
             unique=True,
             name="sections_course_numbers",
         )
@@ -318,7 +357,7 @@ if __name__ == "__main__":
             [("section_instructor", pymongo.ASCENDING)],
             unique=True,
             name="sections_instructors",
-        )
+        ) """
 
     pprint(sections.index_information())
     main_action: str = ""
