@@ -7,31 +7,7 @@ from menu_definitions import add_menu
 from menu_definitions import delete_menu
 from menu_definitions import list_menu
 from configparser import ConfigParser
-
-
-def add(db):
-    """
-    Present the add menu and execute the user's selection.
-    :param db:  The connection to the current database.
-    :return:    None
-    """
-    add_action: str = ""
-    while add_action != add_menu.last_action():
-        add_action = add_menu.menu_prompt()
-        exec(add_action)
-
-
-def delete(db):
-    """
-    Present the delete menu and execute the user's selection.
-    :param db:  The connection to the current database.
-    :return:    None
-    """
-    delete_action: str = ""
-    while delete_action != delete_menu.last_action():
-        delete_action = delete_menu.menu_prompt()
-        exec(delete_action)
-
+from Department import *
 
 def list_objects(db):
     """
@@ -43,6 +19,18 @@ def list_objects(db):
     while list_action != list_menu.last_action():
         list_action = list_menu.menu_prompt()
         exec(list_action)
+
+def select_course(db):
+    department = select_department(db)
+    courses = db["courses"]
+    while True:
+        course_number = int(input("course number-->"))
+
+        if courses.count_documents({"course_number": course_number}) > 0:
+            course_found = courses.find_one({"course_number": course_number})
+            return course_found
+        else:
+            print(f"{course_number} not found in department {department['abbreviation']}")
 
 
 def add_course(db):
@@ -84,38 +72,43 @@ def add_course(db):
         if unique_course_description:
             print("Course description already exists. Please try again.")
             continue
-        break
-    result = collection.insert_one(
-        {
-            "department_abbreviation": department_abbreviation,
-            "course_number": course_number,
-            "course_name": course_name,
-            "course_description": course_description,
-        }
-    )
-    print("Course added successfully.")
+
+        try:
+            result = collection.insert_one(
+                {
+                    "department_abbreviation": department_abbreviation,
+                    "course_number": course_number,
+                    "course_name": course_name,
+                    "course_description": course_description,
+                }
+            )
+            print("Course added successfully.")
+        except Exception as e:
+            pprint(f"Insert Failed. Error: {e}")
+        else:
+            break
+
 
 
 def delete_course(db):
-    collection = db["courses"]
-    while True:
-        course_number = input("Enter the course number to delete: ")
-        unique_course_number = False
-        for course in collection.find():
-            if course["course_number"] == course_number:
-                unique_course_number = True
-        if not unique_course_number:
-            print("Course number does not exist. Please try again.")
-            continue
-        break
-    result = collection.delete_one({"course_number": course_number})
-    print("Course deleted successfully.")
+    course = select_course(db)
+    courses = db["courses"]
+    if db["sections"].count_documents({"course_number": course["course_number"],
+                                       "department_abbreviation": course["department_abbreviation"]
+                                       }) > 0:
+        print("that course contains sections!!!")
+    else:
+        try:
+            deleted = courses.delete_one({"_id": course["_id"]})
+            print(f"We just deleted: {deleted.deleted_count} courses.")
+        except Exception as e:
+            pprint(f"Delete Failed. Error: {e}")
 
 
 def list_course(db):
-    collection = db["courses"]
-    for course in collection.find():
-        print(course)
+    courses = db["courses"].find({}).sort([("department_abbreviation", pymongo.ASCENDING), ("course_number", pymongo.ASCENDING)])
+    for course in courses:
+        pprint(course)
 
 
 if __name__ == "__main__":

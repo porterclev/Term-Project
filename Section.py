@@ -8,42 +8,25 @@ from menu_definitions import delete_menu
 from menu_definitions import list_menu
 from configparser import ConfigParser
 from datetime import time, datetime
+from Course import *
 
 
-def add(db):
-    """
-    Present the add menu and execute the user's selection.
-    :param db:  The connection to the current database.
-    :return:    None
-    """
-    add_action: str = ""
-    while add_action != add_menu.last_action():
-        add_action = add_menu.menu_prompt()
-        exec(add_action)
+def select_section(db):
+    course = select_course(db)
+    sections = db["sections"]
+    while True:
+        section_number = int(input("section number-->"))
+        semester = input("semester(Fall, Winter, Spring, Summer)-->")
+        section_year = int(input("Year-->"))
 
-
-def delete(db):
-    """
-    Present the delete menu and execute the user's selection.
-    :param db:  The connection to the current database.
-    :return:    None
-    """
-    delete_action: str = ""
-    while delete_action != delete_menu.last_action():
-        delete_action = delete_menu.menu_prompt()
-        exec(delete_action)
-
-
-def list_objects(db):
-    """
-    Present the list menu and execute the user's selection.
-    :param db:  The connection to the current database.
-    :return:    None
-    """
-    list_action: str = ""
-    while list_action != list_menu.last_action():
-        list_action = list_menu.menu_prompt()
-        exec(list_action)
+        section_found = sections.find_one({ "department_abbreviation": course["department_abbreviation"],
+                                            "course_number": course["course_number"],
+                                            "section_number": section_number,
+                                            "semester": semester,
+                                            "section_year": section_year})
+        if section_found is not None:
+            return section_found
+        print(f"no such section found in {course['department_abbreviation']} {course['course_number']}!!")
 
 
 def add_section(db):
@@ -65,12 +48,6 @@ def add_section(db):
 
         print("Please provide the course that this section belongs to:")
         department_abbreviation = input("Department abbreviation --> ")
-        # if (
-        #     db["departments"].count_documents({"abbreviation": department_abbreviation})
-        #     == 0
-        # ):
-        #     print("Department abbreviation does not exist. Please try again.")
-        #     continue
         course_number = int(input("Course number --> "))
         if (
             db["courses"].count_documents(
@@ -130,69 +107,43 @@ def add_section(db):
         if unique_instructor:
             print("Section with that instructor already exists. Please try again.")
             continue
-        break
-    result = collection.insert_one(
-        {
-            "department_abbreviation": department_abbreviation,
-            "course_number": course_number,
-            "section_number": section_number,
-            "semester": semester,
-            "section_year": section_year,
-            "building": building,
-            "room": room,
-            "schedule": schedule,
-            "start_time": start_time,
-            "instructor": instructor,
-        }
-    )
-    print("section added successfully.")
+
+        try:
+            result = collection.insert_one(
+                {
+                    "department_abbreviation": department_abbreviation,
+                    "course_number": course_number,
+                    "section_number": section_number,
+                    "semester": semester,
+                    "section_year": section_year,
+                    "building": building,
+                    "room": room,
+                    "schedule": schedule,
+                    "start_time": start_time,
+                    "instructor": instructor,
+                }
+            )
+            print("section added successfully.")
+
+        except Exception as e:
+            pprint(f"Insert failed. Error:{e}")
+        else:
+            break
 
 
 def delete_section(db):
-    collection = db["sections"]
-    while True:
-        department_abbreviation = input("Enter the department abbreviation to delete: ")
-        unique_department_abbreviation = False
-        course_number = int(input("Enter the course number to delete: "))
-        unique_course_number = False
-        section_number = int(input("Enter the section number to delete: "))
-        unique_section_number = False
-        semester = input("Enter the semester to delete: ")
-        unique_semester = False
-        section_year = int(input("Enter the section year to delete: "))
-        unique_section_year = False
-        for section in collection.find():
-            if section["department_abbreviation"] == department_abbreviation:
-                unique_department_abbreviation = True
-            if section["course_number"] == course_number:
-                unique_course_number = True
-            if section["section_number"] == section_number:
-                unique_section_number = True
-            if section["semester"] == semester:
-                unique_semester = True
-            if section["section_year"] == section_year:
-                unique_section_year = True
 
-        if (
-            not unique_course_number
-            and not unique_department_abbreviation
-            and not unique_section_number
-            and not unique_semester
-            and not unique_section_year
-        ):
-            print("Course number does not exist. Please try again.")
-            continue
-        break
-    result = collection.delete_one(
-        {
-            "department_abbreviation": department_abbreviation,
-            "course_number": course_number,
-            "section_number": section_number,
-            "semester": semester,
-            "section_year": section_year,
-        }
-    )
-    print("Course deleted successfully.")
+    section = select_section(db)
+    sections = db["sections"]
+    enrollments = db["enrollments"]
+    if enrollments.count_documents({"section_id": section["_id"]}) > 0:
+        print("that section has enrollments!!!")
+    else:
+        try:
+            deleted = sections.delete_one({"_id": section["_id"]})
+            print(f"We just deleted: {deleted.deleted_count} courses.")
+        except Exception as e:
+            pprint(f"Delete Failed. Error: {e}")
 
 
 def list_section(db):

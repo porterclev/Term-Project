@@ -7,27 +7,52 @@ from menu_definitions import add_menu
 from menu_definitions import delete_menu
 from menu_definitions import list_menu
 from configparser import ConfigParser
-from Department import *
+from Major import *
+from Section import *
 
 
-
-def add_major(db):
-    department = select_department(db)
-    majors = db["majors"]
-    while True:
-
-        name = input("name-->")
-        description = input("description-->")
+def add_student(db):
+    """
+    Add a new student, making sure that we don't put in any duplicates,
+    based on all the candidate keys (AKA unique indexes) on the
+    students collection.  Theoretically, we could query MongoDB to find
+    the uniqueness constraints in place, and use that information to
+    dynamically decide what searches we need to do to make sure that
+    we don't violate any of the uniqueness constraints.  Extra credit anyone?
+    :param collection:  The pointer to the students collection.
+    :return:            None
+    """
+    # Create a "pointer" to the students collection within the db database.
+    collection = db["students"]
+    unique_name: bool = False
+    unique_email: bool = False
+    lastName: str = ""
+    firstName: str = ""
+    email: str = ""
+    while not unique_name or not unique_email:
+        lastName = input("Student last name--> ")
+        firstName = input("Student first name--> ")
+        email = input("Student e-mail address--> ")
+        name_count: int = collection.count_documents(
+            {"last_name": lastName, "first_name": firstName}
+        )
+        unique_name = name_count == 0
+        if not unique_name:
+            print("We already have a student by that name.  Try again.")
+        if unique_name:
+            email_count = collection.count_documents({"e_mail": email})
+            unique_email = email_count == 0
+            if not unique_email:
+                print("We already have a student with that e-mail address.  Try again.")
+    # Build a new students document preparatory to storing it
         try:
-            major = {"department_abbreviation": department["abbreviation"],
-                     "name": name,
-                     "description": description}
-            results = majors.insert_one(major)
-            break
+            student = {"last_name": lastName, "first_name": firstName, "e_mail": email}
+            results = collection.insert_one(student)
         except Exception as e:
-            pprint(f"Insert failed. Error: {e}")
+            pprint(f"Insert Failed. Error: {e}")
 
-def select_major(db):
+
+def select_student(db):
     """
     Select a student by the combination of the last and first.
     :param db:      The connection to the database.
@@ -36,23 +61,26 @@ def select_major(db):
                     the database.
     """
     # Create a connection to the students collection from this database
-    majors = db["majors"]
+    collection = db["students"]
     found: bool = False
-    name: str = ""
-    description: str = ""
+    lastName: str = ""
+    firstName: str = ""
     while not found:
-        name = input("major name--> ")
-        name_count: int = majors.count_documents(
-            {"name": name}
+        lastName = input("Student's last name--> ")
+        firstName = input("Student's first name--> ")
+        name_count: int = collection.count_documents(
+            {"last_name": lastName, "first_name": firstName}
         )
         found = name_count == 1
         if not found:
-            print("No major found by that name.  Try again.")
-    found_student = majors.find_one({"name": name})
+            print("No student found by that name.  Try again.")
+    found_student = collection.find_one(
+        {"last_name": lastName, "first_name": firstName}
+    )
     return found_student
 
 
-def delete_major(db):
+def delete_student(db):
     """
     Delete a student from the database.
     :param db:  The current database connection.
@@ -61,25 +89,23 @@ def delete_major(db):
     # student isn't a Student object (we have no such thing in this application)
     # rather it's a dict with all the content of the selected student, including
     # the MongoDB-supplied _id column which is a built-in surrogate.
-    major = select_major(db)
+    student = select_student(db)
     # Create a "pointer" to the students collection within the db database.
-    majors = db["majors"]
-    # student["_id"] returns the _id value from the selected student document.
+    students = db["students"]
     student_majors = db["student_majors"]
-    if student_majors.count_documents({"major_id": major["_id"]}) > 0:
-        pprint("that major has students in it!!!")
-    else:
-        try:
-            deleted = majors.delete_one({"_id": major["_id"]})
-            print(f"We just deleted: {deleted.deleted_count} major(s).")
-        except Exception as e:
-            pprint(f"delete failed. Error: {e}")
+    enrollments = db["enrollments"]
+    # student["_id"] returns the _id value from the selected student document.
+    if student_majors.count_documents({"student_id": student["_id"]}) > 0:
+        print("that student has majors!!!")
+    elif enrollments.count_documents({"student_id": student["_id"]}) > 0:
+        print("that student has enrollments!!!")
+    deleted = students.delete_one({"_id": student["_id"]})
     # The deleted variable is a document that tells us, among other things, how
     # many documents we deleted.
+    pprint(f"We just deleted: {deleted.deleted_count} students.")
 
 
-
-def list_major(db):
+def list_student(db):
     """
     List all of the students, sorted by last name first, then the first name.
     :param db:  The current connection to the MongoDB database.
@@ -90,14 +116,14 @@ def list_major(db):
     # no criteria.  Essentially this is analogous to a SQL find * from students.
     # Each tuple in the sort specification has the name of the field, followed
     # by the specification of ascending versus descending.
-    majors = (
-        db["majors"]
+    students = (
+        db["students"]
         .find({})
-        .sort([("name", pymongo.ASCENDING), ("description", pymongo.ASCENDING)])
+        .sort([("last_name", pymongo.ASCENDING), ("first_name", pymongo.ASCENDING)])
     )
     # pretty print is good enough for this work.  It doesn't have to win a beauty contest.
-    for major in majors:
-        pprint(major)
+    for student in students:
+        pprint(student)
 
 
 if __name__ == "__main__":
@@ -136,23 +162,25 @@ if __name__ == "__main__":
 
     # ************************** Set up the students collection
     students_indexes = students.index_information()
-    if "majors_names" in students_indexes.keys():
+    if "students_last_and_first_names" in students_indexes.keys():
         print("first and last name index present.")
     else:
         # Create a single UNIQUE index on BOTH the last name and the first name.
         students.create_index(
-            [("major_name", pymongo.ASCENDING), ("majors_names", pymongo.ASCENDING)],
+            [("last_name", pymongo.ASCENDING), ("first_name", pymongo.ASCENDING)],
             unique=True,
-            name="majors_names",
+            name="students_last_and_first_names",
         )
-    if "majors_descriptions" in students_indexes.keys():
+    if "students_e_mail" in students_indexes.keys():
         print("e-mail address index present.")
     else:
         # Create a UNIQUE index on just the e-mail address
         students.create_index(
-            [("major_description", pymongo.ASCENDING)],
-            unique=True,
-            name="majors_descriptions",
+            [("e_mail", pymongo.ASCENDING)], unique=True, name="students_e_mail"
         )
     pprint(students.index_information())
-
+    main_action: str = ""
+    while main_action != menu_main.last_action():
+        main_action = menu_main.menu_prompt()
+        print("next action: ", main_action)
+        exec(main_action)
