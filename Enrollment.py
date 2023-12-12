@@ -70,15 +70,11 @@ def delete_enrollment(db):
         unique_section_id = False
         student_id = int(input("Enter the student ID of the enrollment to delete: "))
         unique_student_id = False
-        enrollment_type = input("Enter the enrollment type: ")
-        correct_type = False
         for enrollment in collection.find():
             if enrollment["section_id"] == section_id:
                 unique_section_id = True
             if enrollment["course_number"] == course_number:
-                unique_student_id = True
-            if enrollment["enrollment_type"] == enrollment_type:
-                correct_type = True         
+                unique_student_id = True    
         if (
             not unique_section_id
             and not unique_student_id
@@ -90,9 +86,8 @@ def delete_enrollment(db):
     result = collection.delete_one(
         {
             "section_id": section_id,
-            "student_id": student_id,
-            "enrollment_type": enrollment_type
+            "student_id": student_id
         }
     )
-    print("Course deleted successfully.")
+    print("Enrollment deleted successfully.")
 
