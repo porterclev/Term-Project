@@ -6,7 +6,7 @@ enrollment_validator =
       'description': 'An enrollment of a student into a section.',
       'required': [
         'student_id',
-        'section_id',
+        'section_id'
       ],
       'additionalProperties': false,
       'properties': {
