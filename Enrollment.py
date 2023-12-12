@@ -59,8 +59,9 @@ def add_enrollment(db):
         section_count = collection.count_documents({"section_id": sectionID})
         unique_email = email_count == 0     
         if not unique_name and not unique student:
-            print("We already have a student with that ID number enrolled in that section.  Try again.")                  
-    enrollment = {"student_id": studentID, "section_id": sectionID}
+            print("We already have a student with that ID number enrolled in that section.  Try again.")
+    enrollment_type = input("Enrollment type (PassFail or LetterGrade) -->")
+    enrollment = {"student_id": studentID, "section_id": sectionID, "enrollment_type": enrollment_type}
     results = collection.insert_one(enrollment)
 
 def delete_enrollment(db):
