@@ -19,6 +19,10 @@ student_major_validator =
         'section_id': {
           'bsonType': 'string',
           'description': 'The ID number of the section the student is enrolling in'
+        },
+        'declaration_date'
+          'bsonType': 'date',
+          'description': 'The date the student declared the major'
         }
       }
     }
