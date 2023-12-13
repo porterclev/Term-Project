@@ -107,7 +107,7 @@ def delete_student(db):
 
 def list_student(db):
     """
-    List all of the students, sorted by last name first, then the first name.
+    List all the students, sorted by last name first, then the first name.
     :param db:  The current connection to the MongoDB database.
     :return:    None
     """
@@ -126,61 +126,4 @@ def list_student(db):
         pprint(student)
 
 
-if __name__ == "__main__":
-    config = ConfigParser()
-    config.sections()
-    config.read("config.config")
-    print(config["Mongo"]["USERNAME"])
-    username = config["Mongo"]["USERNAME"]
-    password = config["Mongo"]["PASSWORD"]
-    project = config["Mongo"]["PROJECT"]
-    hash_name = config["Mongo"]["HASH"]
 
-    # password: str = getpass.getpass('Mongo DB password -->')
-    # username: str = input('Database username [user on Atlas] -->') or \
-    #                 "CECS-323-Spring-2023-user"
-    # project: str = input('Mongo project name [Atlas Project Name] -->') or \
-    #                "CECS-323-Spring-2023"
-    # hash_name: str = input('7-character database hash [qzl49vl] -->') or "puxnikb"
-    cluster = f"mongodb+srv://{username}:{password}@{project}.{hash_name}.mongodb.net/?retryWrites=true&w=majority"
-    print(
-        f"Cluster: mongodb+srv://{username}:********@{project}.{hash_name}.mongodb.net/?retryWrites=true&w=majority"
-    )
-    client = MongoClient(cluster)
-    # As a test that the connection worked, print out the database names.
-    print(client.list_database_names())
-    # db will be the way that we refer to the database from here on out.
-    db = client["Demonstration"]
-    # Print off the collections that we have available to us, again more of a test than anything.
-    print(db.list_collection_names())
-    # student is our students collection within this database.
-    # Merely referencing this collection will create it, although it won't show up in Atlas until
-    # we insert our first document into this collection.
-    students = db["students"]
-    student_count = students.count_documents({})
-    print(f"Students in the collection so far: {student_count}")
-
-    # ************************** Set up the students collection
-    students_indexes = students.index_information()
-    if "students_last_and_first_names" in students_indexes.keys():
-        print("first and last name index present.")
-    else:
-        # Create a single UNIQUE index on BOTH the last name and the first name.
-        students.create_index(
-            [("last_name", pymongo.ASCENDING), ("first_name", pymongo.ASCENDING)],
-            unique=True,
-            name="students_last_and_first_names",
-        )
-    if "students_e_mail" in students_indexes.keys():
-        print("e-mail address index present.")
-    else:
-        # Create a UNIQUE index on just the e-mail address
-        students.create_index(
-            [("e_mail", pymongo.ASCENDING)], unique=True, name="students_e_mail"
-        )
-    pprint(students.index_information())
-    main_action: str = ""
-    while main_action != menu_main.last_action():
-        main_action = menu_main.menu_prompt()
-        print("next action: ", main_action)
-        exec(main_action)

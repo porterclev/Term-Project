@@ -3,12 +3,16 @@ from Student import *
 from Major import *
 from Course import *
 from Section import *
-#from StudentMajor import *
+from StudentMajor import *
 from Enrollment import *
-#from LetterGrade import *
-#from PassFail import * probably merge these with enrollment file
+
+
 def create_collections(db):
-    #create all the db collections, raise an exception for each in case it is already created.
+    """
+    create all the db collections, raise an exception for each in case it is already created.
+    this can be implemented by just calling every schema creator. (really easy!)
+    """
+
     pass
 
 def add(db):
@@ -55,7 +59,7 @@ if __name__ == "__main__":
     password = config["Mongo"]["PASSWORD"]
     project = config["Mongo"]["PROJECT"]
     hash_name = config["Mongo"]["HASH"]
-    database_name = input("database name-->") or "Demonstration"
+    database_name = input("database name (press ENTER for 'Demonstration')-->") or "Demonstration"#just press enter :/
     # password: str = getpass.getpass('Mongo DB password -->')
     # username: str = input('Database username [user on Atlas] -->') or \
     #                 "CECS-323-Spring-2023-user"
