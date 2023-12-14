@@ -1,3 +1,5 @@
+import pymongo
+from pymongo import MongoClient
 def create_majors_collection(db):
   majors: Collection = db["majors"]
   major_validator = 
