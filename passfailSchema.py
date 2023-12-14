@@ -18,7 +18,7 @@ def create_pass_fail_collection(db):
           'enrollment_id': {
             'bsonType': 'integer',
             'description': 'The ID number of the enrollment'
-          },
+         },
           'application_date': {
             'bsonType': 'date',
             'description': 'The date of the student application to the section'
