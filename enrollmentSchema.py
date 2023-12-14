@@ -1,3 +1,5 @@
+import pymongo
+from pymongo import MongoClient
 def create_enrollments_collection(db):
   enrollments: Collection = db["enrollments"]
   enrollment_validator = 
