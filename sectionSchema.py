@@ -39,7 +39,7 @@ def create_sections_collection(db):
           'semester': {
             'bsonType': 'string',
             'enum': ['Fall', 'Spring', 'Winter', 'Summer I', 'Summer II'],
-            'maxLength': 10
+            'maxLength': 10,
             'description': 'The semester the section takes place during.'
           },
           'section_year': {
@@ -54,7 +54,7 @@ def create_sections_collection(db):
               'EN4',  'EN5', 'ET',
               'HSCI', 'NUR', 'VEC'
             ],
-            'maxLength': 6
+            'maxLength': 6,
             'description': 'The building the section takes place in.'
           },
           'room': {
@@ -64,11 +64,11 @@ def create_sections_collection(db):
           'schedule': {
             'bsonType': 'string',
             'maxLength': 6,
-            'enum': ['MW', 'TuTh', 'MWF', 'F', 'S']
+            'enum': ['MW', 'TuTh', 'MWF', 'F', 'S'],
             'description': 'The days of the week on which the section takes place.'
           },
           'start_time': {
-            'bsonType': 'time'
+            'bsonType': 'time',
             'description': 'The time of day at which the section begins.'
           },
           'instructor': {
