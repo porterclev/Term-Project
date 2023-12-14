@@ -59,8 +59,8 @@ def create_sections_collection(db):
           },
           'room': {
             'bsonType': 'integer',
-            'minValue' = 1,
-            'maxValue' = 999,
+            'min' = 1,
+            'max' = 999,
             'description': 'The number of the room the section takes place in.'
           },
           'schedule': {
