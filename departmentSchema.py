@@ -14,7 +14,7 @@ def create_departments_collection(db):
             'office',
             'description'
           ],
-          'additionalProperties': false,
+          'additionalProperties': False,
           'properties': {
             '_id': {},
             'name': {
