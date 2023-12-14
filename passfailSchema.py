@@ -10,7 +10,7 @@ def create_pass_fail_collection(db):
           'enrollment_id',
           'application_date'
         ],
-        'additionalProperties': false,
+        'additionalProperties': False,
         'properties': {
           '_id': {},
           'enrollment_id': {
