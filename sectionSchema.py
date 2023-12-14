@@ -72,7 +72,7 @@ def create_sections_collection(db):
             'description': 'The time of day at which the section begins.'
           },
           'instructor': {
-            'bsonType': 'string'
+            'bsonType': 'string',
             'maxLength': 80,
             'description': 'The instructor teaching the section.'
           }
