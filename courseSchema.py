@@ -1,3 +1,5 @@
+import pymongo
+from pymongo import MongoClient
 def create_courses_collection(db):
   courses: Collection = db["courses"]
   course_validator = 
