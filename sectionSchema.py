@@ -1,3 +1,5 @@
+import pymongo
+from pymongo import MongoClient
 def create_sections_collection(db):
   sections: Collection = db["sections"]
   section_validator = 
