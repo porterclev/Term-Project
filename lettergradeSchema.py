@@ -1,3 +1,5 @@
+import pymongo
+from pymongo import MongoClient
 def create_letter_grades_collection(db):
   letter_grades: Collection = db["letter_grades"]
   letter_grade_validator = 
