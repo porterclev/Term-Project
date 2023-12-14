@@ -1,3 +1,5 @@
+import pymongo
+from pymongo import MongoClient
 def create_pass_fail_collection(db):
   pass_fails: Collection = db["pass_fails"]
   pass_fail_validator = 
