@@ -1,3 +1,5 @@
+import pymongo
+from pymongo import MongoClient
 def create_students_collection(db):
   students: Collection = db["students"]
   student_validator={
