@@ -25,4 +25,4 @@ def create_majors_collection(db):
       }
     }
   }
-  db.create_collection["majors", validator=major_validator)
+  db.create_collection("majors", validator=major_validator)
