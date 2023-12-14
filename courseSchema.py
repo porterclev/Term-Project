@@ -25,8 +25,8 @@ def create_courses_collection(db):
           },
           'course_number': {
             'bsonType': 'integer',
-            'minValue' = 100,
-            'maxValue' = 700,
+            'min' = 100,
+            'max' = 700,
             'description': 'The number of the course within the department.'
           },
           'name': {
@@ -41,8 +41,8 @@ def create_courses_collection(db):
           },
           'units': {
             'bsonType': 'integer',
-            'minValue' = 1,
-            'maxValue' = 5,
+            'min' = 1,
+            'max' = 5,
             'description': 'The number of units the course is worth.'
           }
         }
