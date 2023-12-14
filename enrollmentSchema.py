@@ -10,7 +10,7 @@ def create_enrollments_collection(db):
         'description': 'An enrollment of a student into a section.',
         'required': [
           'student_id',
-          'section_id'
+          'section_id',
           'enrollment_type'
         ],
         'additionalProperties': False,
@@ -25,7 +25,7 @@ def create_enrollments_collection(db):
             'description': 'The ID number of the section the student is enrolling in'
           },
           'enrollment_type': {
-            'bsonType': 'string'
+            'bsonType': 'string',
             'enum': ['PassFail', 'LetterGrade'],
             'description': 'The type of enrollment the student has in the section'
           }
