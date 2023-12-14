@@ -25,7 +25,7 @@ def create_sections_collection(db):
           '_id': {},
           'department_abbreviation': {
             'bsonType': 'string',
-            'maxLength': 10,
+            'maxLength': 6,
             'description': 'The abbreviation of the department that offers the course the section is of.'
           },
           'course_number': {
