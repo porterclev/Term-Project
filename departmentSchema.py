@@ -1,3 +1,5 @@
+import pymongo
+from pymongo import MongoClient
 def create_departments_collection(db):
   departments: Collection = db["departments"]
   department_validator = 
