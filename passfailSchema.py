@@ -7,7 +7,7 @@ def create_pass_fail_collection(db):
     'validator': {
       '$jsonSchema': {
         'bsonType': 'object',
-        'description': 'An PassFail enrollment of a student in a section.',
+        'description': 'A PassFail enrollment of a student in a section.',
         'required': [
           'enrollment_id',
           'application_date'
