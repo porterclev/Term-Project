@@ -29,12 +29,12 @@ def create_courses_collection(db):
           },
           'name': {
             'bsonType': 'string',
-            'maxLength': 50
+            'maxLength': 50,
             'description': 'The name of the course.'
           },
           'description': {
             'bsonType': 'string',
-            'maxLength': 80
+            'maxLength': 80,
             'description': 'Text about the course.'
           },
           'units': {
